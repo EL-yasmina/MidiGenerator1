@@ -1,5 +1,5 @@
 import pytest
-from ..chord_generator import  pick_random_chord, calculate_interval
+from ..chord_generator import  pick_random_chord, calculate_interval, evaluate_stability
 
 chords = {
     # Accords mineurs
@@ -184,3 +184,13 @@ def test_calculate_interval():
     assert calculate_interval(64, 60) == -4 # E4 to C4 (MIDI: 64 to 60) -> Negative interval (descending major third)
     assert calculate_interval(48, 55) == 7  # C3 to G3 (MIDI: 48 to 55) -> Perfect fifth
     assert calculate_interval(55, 48) == -7 # G3 to C3 (MIDI: 55 to 48) -> Negative interval (descending perfect fifth)
+
+def test_evaluate_stability():
+    assert evaluate_stability('Cmaj', 'Cmaj') == 100  # Intervalle de 0 (même accord)
+    assert evaluate_stability('Cmaj', 'Dmin') == 100  # Intervalle de 2
+    assert evaluate_stability('Cmaj', 'Fmaj') == 100  # Intervalle de 5
+    assert evaluate_stability('Cmaj', 'Gmaj') == 100  # Intervalle de 7
+
+    # Test des intervalles non stables
+    assert evaluate_stability('Cmaj', 'Amin') == 0  # Intervalle de 9
+    assert evaluate_stability('Cmaj', 'Bdim') == 0  # Intervalle de 11
